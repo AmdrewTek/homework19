@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation(
+            'org.junit.jupiter:junit-jupiter:5.13.0',
+            'com.codeborne:selenide:7.2.0',
+            'org.aeonbits.owner:owner:1.0.12',
+            'io.github.bonigarcia:webdrivermanager:6.1.0',
+            'org.assertj:assertj-core:3.27.3')
+    testRuntimeOnly(
+            'org.junit.platform:junit-platform-launcher')
+}
+
+test {
+    useJUnitPlatform()
+    systemProperties System.getProperties()
+}
