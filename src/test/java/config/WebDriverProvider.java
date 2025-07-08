@@ -1,11 +1,10 @@
-
 package config;
 
 import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 import java.util.function.Supplier;
@@ -17,9 +16,8 @@ public class WebDriverProvider implements Supplier<WebDriver> {
 
   private final WebDriverConfig config = ConfigFactory.create(WebDriverConfig.class, System.getProperties());
 
-
+  @Override
   public WebDriver get() {
-
     if (config.isRemote()) {
       return createRemoteWebDriver();
     } else {
@@ -28,22 +26,27 @@ public class WebDriverProvider implements Supplier<WebDriver> {
   }
 
   private WebDriver createRemoteWebDriver() {
-    switch (config.browser()) {
-      case CHROME:
+    String browser = config.browser().toLowerCase().trim();
+
+    switch (browser) {
+      case CHROME -> {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.setBrowserVersion(config.browserVersion());
         return new RemoteWebDriver(config.remoteUrl(), chromeOptions);
-      case FIREFOX:
+      }
+      case FIREFOX -> {
         FirefoxOptions firefoxOptions = new FirefoxOptions();
         firefoxOptions.setBrowserVersion(config.browserVersion());
         return new RemoteWebDriver(config.remoteUrl(), firefoxOptions);
-      default:
-        throw new RuntimeException("Unsupported browser: " + config.browser());
+      }
+      default -> throw new RuntimeException("Unsupported browser: " + config.browser());
     }
   }
 
   private WebDriver createLocalWebDriver() {
-    switch (config.browser()) {
+    String browser = config.browser().toLowerCase().trim();
+
+    switch (browser) {
       case CHROME -> {
         WebDriverManager.chromedriver().setup();
         return new org.openqa.selenium.chrome.ChromeDriver();
